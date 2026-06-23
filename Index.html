@@ -92,6 +92,8 @@
   .cat-tabs button.active{color:var(--morado);border-color:var(--cyan)}
   .footer{padding:10px 28px;background:var(--gris-suave);border-top:1px solid var(--gris-borde);color:var(--texto-suave);font-size:11px;display:flex;justify-content:space-between}
   .footer .updated{color:var(--morado);font-weight:600}
+  .footer a{color:var(--morado);font-weight:700;text-decoration:none}
+  .footer a:hover{text-decoration:underline}
   .empty{text-align:center;color:var(--texto-suave);padding:60px 20px;font-style:italic}
 </style>
 </head>
@@ -176,7 +178,7 @@
 
   <footer class="footer">
     <div>ON*NET FIBRA · Manual de marca v1.0 · Paleta morado <code>#201751</code> · cyan <code>#06EFFF</code></div>
-    <div class="updated" id="updated"></div>
+    <div><span class="updated" id="updated"></span> · <a href="/?logout=1">Log out</a></div>
   </footer>
 </div>
 
