@@ -27,7 +27,23 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
 .tab{padding:14px 22px;cursor:pointer;font-size:13px;font-weight:600;color:var(--txt-soft);border-bottom:3px solid transparent;user-select:none}
 .tab.active{color:var(--morado);border-bottom-color:var(--cyan);background:#FAFBFC}
 .tab:hover:not(.active){background:#F7F8FA}
-.filters{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding:14px 24px;background:#FAFBFC;border-bottom:1px solid var(--border);align-items:end}
+.subtabs{display:none;padding:8px 24px;background:#FAFBFC;border-bottom:1px solid var(--border);gap:8px;align-items:center}
+.subtabs.show{display:flex}
+.subtabs .lbl{font-size:11px;color:var(--txt-soft);font-weight:700;text-transform:uppercase;letter-spacing:.3px;margin-right:8px}
+.subtabs .stab{padding:6px 14px;cursor:pointer;font-size:12px;font-weight:600;color:var(--txt-soft);border:1px solid var(--border);border-radius:5px;background:#fff;user-select:none}
+.subtabs .stab.active{background:var(--morado);color:#fff;border-color:var(--morado)}
+.subtabs .stab:hover:not(.active){background:#F4F5F8}
+.filters-det{border-bottom:1px solid var(--border);background:#FAFBFC}
+.filters-det > summary{display:none;list-style:none;cursor:pointer;padding:12px 16px;font-size:13px;font-weight:600;color:var(--morado);user-select:none}
+.filters-det > summary::-webkit-details-marker{display:none}
+.filters-det > summary::after{content:"▾";float:right;transition:transform .2s}
+.filters-det[open] > summary::after{transform:rotate(180deg)}
+/* Desktop: mostrar filtros aunque details este cerrado (el summary esta oculto) */
+@media(min-width:481px){
+  .filters-det > .filters{display:grid !important}
+}
+.filters{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding:14px 24px;background:#FAFBFC;align-items:start}
+.filters.no-tipo{grid-template-columns:repeat(5,1fr)}
 .fld{display:flex;flex-direction:column;gap:4px}
 .fld label{font-size:11px;color:var(--txt-soft);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
 .fld select,.fld input{padding:7px 10px;font-size:13px;border:1px solid var(--border);border-radius:5px;background:#fff;font-family:inherit}
@@ -48,7 +64,12 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
 .panel{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
 .panel h3{margin:0 0 12px;font-size:13px;color:var(--txt-soft);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 .chart-wrap{position:relative;height:380px}
+.chart-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.chart-scroll-inner{position:relative;height:100%}
+.kpis-col{display:flex;flex-direction:column;gap:10px}
 .kpis{display:flex;flex-direction:column;gap:12px}
+.kpis-note{font-size:11px;color:var(--txt-soft);line-height:1.5;padding:10px 12px;background:#F4F5F8;border-radius:6px;border-left:3px solid var(--cyan)}
+.kpis-note b{color:var(--morado);font-weight:600}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
 .kpi .lbl{font-size:11px;color:var(--txt-soft);font-weight:700;letter-spacing:.3px;text-transform:uppercase}
 .kpi .val{font-size:30px;font-weight:800;color:var(--morado);margin:4px 0 2px;line-height:1}
@@ -61,7 +82,60 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
 .bottom{padding:0 24px 24px}
 .loader{padding:60px 40px;text-align:center;color:var(--txt-soft)}
 .loader h2{color:var(--morado);margin:0 0 8px}
-@media(max-width:900px){.main{grid-template-columns:1fr}.filters{grid-template-columns:repeat(2,1fr)}}
+
+/* ---------- Responsive ---------- */
+@media(max-width:1000px){
+  .main{grid-template-columns:1fr}
+  .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .chart-wrap{height:340px}
+}
+@media(max-width:900px){
+  .filters{grid-template-columns:repeat(3,1fr)}
+  .filters.no-tipo{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:700px){
+  .header{padding:12px 16px;gap:10px;flex-wrap:wrap}
+  .header .ast{font-size:22px}
+  .header .title{font-size:15px}
+  .header .updated{font-size:10px;margin-left:auto}
+  .header .updated b{font-size:11px}
+  .brand{padding:4px 8px;font-size:12px}
+  .tabs{overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;-webkit-overflow-scrolling:touch}
+  .tab{padding:12px 14px;font-size:12px;white-space:nowrap}
+  .subtabs{overflow-x:auto;padding:8px 16px}
+  .subtabs .stab{white-space:nowrap;flex-shrink:0}
+  .filters{grid-template-columns:repeat(2,1fr);padding:12px 16px;gap:10px}
+  .filters.no-tipo{grid-template-columns:repeat(2,1fr)}
+  .main{padding:14px 16px;gap:12px}
+  .bottom{padding:0 16px 16px}
+  .panel{padding:12px}
+  .chart-wrap{height:280px}
+  .kpi .val{font-size:22px}
+  .kpi .lbl{font-size:10px}
+  .kpi .delta{font-size:10px}
+  .kpi .meta{font-size:10px}
+  .kpis{grid-template-columns:repeat(3,1fr);gap:8px}
+  .kpi{padding:10px}
+}
+@media(max-width:480px){
+  /* Filtros en accordion */
+  .filters-det > summary{display:block}
+  .filters-det:not([open]) .filters{display:none}
+  .filters{grid-template-columns:repeat(2,1fr);padding:12px 16px;background:#fff}
+  .filters.no-tipo{grid-template-columns:repeat(2,1fr)}
+  /* KPIs siempre en 3 columnas lado a lado */
+  .kpis{grid-template-columns:repeat(3,1fr);gap:6px}
+  .kpi{padding:8px}
+  .kpi .val{font-size:18px;margin:2px 0}
+  .kpi .lbl{font-size:9px;letter-spacing:0}
+  .kpi .delta{font-size:9px}
+  .kpi .meta{font-size:9px}
+  .kpi .spark-wrap{height:24px}
+  .chart-wrap{height:260px}
+  /* Volumen: scroll horizontal + ancho minimo para espaciar barras */
+  .chart-scroll-inner{min-width:720px}
+  .header .updated{width:100%;text-align:left;margin-left:0;margin-top:4px}
+}
 </style>
 </head>
 <body>
@@ -78,14 +152,24 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
   <div class="tab active" data-tab="C">SLA 10/20/36 hrs &middot; Cr&iacute;tica + Fibra Oscura</div>
   <div class="tab" data-tab="E">SLA 12/24/48 hrs &middot; Est&aacute;ndar</div>
   <div class="tab" data-tab="R">SLA 12/24/48 hrs &middot; Reclamo</div>
+  <div class="tab" data-tab="A">Detalle por agencia</div>
 </div>
 
-<div class="filters">
+<div class="subtabs" id="subtabs">
+  <span class="lbl">Tipo:</span>
+  <div class="stab active" data-sub="C">Cr&iacute;tica + Fibra Oscura</div>
+  <div class="stab" data-sub="E">Est&aacute;ndar</div>
+  <div class="stab" data-sub="R">Reclamo</div>
+</div>
+
+<details class="filters-det" id="filtersDet">
+<summary>Filtros</summary>
+<div class="filters" id="filters">
   <div class="fld"><label>Mes desde</label><select id="fDesde"></select></div>
   <div class="fld"><label>Mes hasta</label><select id="fHasta"></select></div>
   <div class="fld"><label>EECC</label><div class="dd" id="ddEECC"><button class="dd-btn" type="button">Todos</button><div class="dd-panel"></div></div></div>
   <div class="fld"><label>Agencia</label><div class="dd" id="ddAgencia"><button class="dd-btn" type="button">Todas</button><div class="dd-panel"></div></div></div>
-  <div class="fld"><label>Tipo Ticket</label><div class="dd" id="ddTipo"><button class="dd-btn" type="button">Todos</button><div class="dd-panel"></div></div></div>
+  <div class="fld" id="fldTipo"><label>Tipo Ticket</label><div class="dd" id="ddTipo"><button class="dd-btn" type="button">Todos</button><div class="dd-panel"></div></div></div>
   <div class="fld">
     <label>Medici&oacute;n</label>
     <div class="toggle" id="fMet">
@@ -96,19 +180,25 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
     <label class="chk" style="margin-top:6px"><input type="checkbox" id="fMetas" checked> Mostrar metas</label>
   </div>
 </div>
+</details>
 
 <div class="main">
   <div class="panel">
     <h3 id="chartTitle">Evoluci&oacute;n SLA &middot; Cr&iacute;tica</h3>
     <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
   </div>
-  <div class="kpis" id="kpis"></div>
+  <div class="kpis-col">
+    <div class="kpis" id="kpis"></div>
+    <div class="kpis-note" id="kpisNote"></div>
+  </div>
 </div>
 
 <div class="bottom">
   <div class="panel">
-    <h3>Volumen mensual de tickets por EECC</h3>
-    <div class="chart-wrap" style="height:280px"><canvas id="volChart"></canvas></div>
+    <h3 id="volTitle">Volumen mensual de tickets por EECC</h3>
+    <div class="chart-wrap chart-scroll" style="height:280px">
+      <div class="chart-scroll-inner"><canvas id="volChart"></canvas></div>
+    </div>
   </div>
 </div>
 </div>
@@ -130,17 +220,36 @@ const TAB_METAS = {
 };
 const COLOR = {CPR:["#06EFFF","#F9A825","#E91E63"], SPR:["#7A9CA8","#C2A878","#B77A92"]};
 const EECC_COLOR = {COBRA:"#06EFFF",DOMINION:"#201751",LARI:"#F9A825",TRAZA:"#E91E63",ZENER:"#5A5E72"};
+const AGENCIA_COLORS = ["#06EFFF","#201751","#F9A825","#E91E63","#5A5E72","#2E7D32","#7A9CA8","#C2A878","#B77A92","#9C27B0","#00838F","#BF360C"];
+const TIPO_COLOR = {"Critica":"#E91E63","Fibra Oscura":"#201751","Estandar":"#06EFFF","Reclamo":"#F9A825"};
+const TIPO_ORDEN = ["Critica","Fibra Oscura","Estandar","Reclamo"];
 const MES_LBL = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
 function lblPeriodo(p){const [y,m]=p.split("-");return `${MES_LBL[+m-1]}-${y.slice(2)}`}
+function lblSemana(s){const [y,w]=s.split("-W");return `S${w}-${y.slice(2)}`}
 
 let state, lineChart, volChart, sparkCharts=[];
+let couplingLock = false;  // evita loops en coupling EECC<->Agencia
+
+// Tipo/umbrales/metas efectivos: si tab === "A", usa el subTab
+function currentTipoKey(){ return state.tab === "A" ? state.subTab : state.tab; }
+function currentTipos(){ return TAB_TIPOS[currentTipoKey()]; }
+function currentUmbrales(){ return TAB_UMBRALES[currentTipoKey()]; }
+function currentMetas(){ return TAB_METAS[currentTipoKey()]; }
 
 function periodosRango(){
   return DATA.meta.periodos.filter(p => p >= state.desde && p <= state.hasta);
 }
+function semanasRango(){
+  // Semanas cuyo mes-lunes esta dentro del rango desde/hasta
+  const map = DATA.meta.semana_a_periodo || {};
+  return DATA.meta.semanas.filter(s => {
+    const p = map[s];
+    return p && p >= state.desde && p <= state.hasta;
+  });
+}
 function rowsFiltradas(){
   const ps = new Set(periodosRango());
-  const tiposTab = new Set(TAB_TIPOS[state.tab]);
+  const tiposTab = new Set(currentTipos());
   const tiposSel = new Set([...state.tipo].filter(t => tiposTab.has(t)));
   return DATA.agregado.filter(r =>
     ps.has(r.periodo) &&
@@ -149,10 +258,21 @@ function rowsFiltradas(){
     tiposSel.has(r.tipo)
   );
 }
+function rowsSemanales(){
+  const ss = new Set(semanasRango());
+  const tiposTab = new Set(currentTipos());
+  const tiposSel = new Set([...state.tipo].filter(t => tiposTab.has(t)));
+  return DATA.semanal.filter(r =>
+    ss.has(r.semana) &&
+    state.eecc.has(r.eecc) &&
+    state.agencia.has(r.agencia) &&
+    tiposSel.has(r.tipo)
+  );
+}
 
 function serieMensual(metrica){
   const ps = periodosRango();
-  const umbrales = TAB_UMBRALES[state.tab];
+  const umbrales = currentUmbrales();
   const acc = {};
   for(const p of ps) for(const u of umbrales) acc[`${p}|${u}`] = {c:0,t:0};
   for(const r of rowsFiltradas()){
@@ -171,65 +291,124 @@ function serieMensual(metrica){
   return {labels: ps.map(lblPeriodo), series};
 }
 
+function serieSemanal(metrica){
+  const ss = semanasRango();
+  const umbrales = currentUmbrales();
+  const acc = {};
+  for(const s of ss) for(const u of umbrales) acc[`${s}|${u}`] = {c:0,t:0};
+  for(const r of rowsSemanales()){
+    if(r.metrica !== metrica) continue;
+    const k = `${r.semana}|${r.umbral}`;
+    if(!(k in acc)) continue;
+    acc[k].c += r.cumple; acc[k].t += r.total;
+  }
+  const series = umbrales.map(u => ({
+    umbral: u,
+    data: ss.map(s => {
+      const v = acc[`${s}|${u}`];
+      return v.t > 0 ? +(100*v.c/v.t).toFixed(2) : null;
+    })
+  }));
+  return {labels: ss.map(lblSemana), series};
+}
+
 function kpiData(metrica){
   const ps = periodosRango();
-  const umbrales = [...TAB_UMBRALES[state.tab]].reverse();
+  const umbrales = [...currentUmbrales()].reverse();
   const rows = rowsFiltradas();
   const out = [];
   for(const u of umbrales){
-    const ultimo = ps[ps.length-1];
-    const prev = ps[ps.length-2];
-    const spark = ps.map(p => {
+    // spark: {pct, total} por periodo o null
+    const sparkFull = ps.map(p => {
       let c=0,t=0;
       for(const r of rows){
         if(r.umbral !== u || r.metrica !== metrica) continue;
         if(r.periodo === p){c+=r.cumple;t+=r.total}
       }
-      return t>0 ? 100*c/t : null;
+      return t>0 ? {pct: 100*c/t, total: t} : null;
     });
-    let cAct=0,tAct=0,cPrev=0,tPrev=0;
-    for(const r of rows){
-      if(r.umbral !== u || r.metrica !== metrica) continue;
-      if(r.periodo === ultimo){cAct+=r.cumple;tAct+=r.total}
-      if(r.periodo === prev){cPrev+=r.cumple;tPrev+=r.total}
+    const spark = sparkFull.map(v => v ? v.pct : null);
+    let idxUlt = -1, idxPrev = -1;
+    for(let i = ps.length - 1; i >= 0; i--){
+      if(sparkFull[i] != null){
+        if(idxUlt < 0) idxUlt = i;
+        else { idxPrev = i; break; }
+      }
     }
-    const pAct = tAct>0 ? 100*cAct/tAct : null;
-    const pPrev = tPrev>0 ? 100*cPrev/tPrev : null;
-    const meta = TAB_METAS[state.tab][u];
-    out.push({umbral:u, valor:pAct, delta:(pAct!=null && pPrev!=null) ? pAct - pPrev : null, meta, spark});
+    const pAct = idxUlt >= 0 ? sparkFull[idxUlt].pct : null;
+    const pPrev = idxPrev >= 0 ? sparkFull[idxPrev].pct : null;
+    const totalUlt = idxUlt >= 0 ? sparkFull[idxUlt].total : 0;
+    const meta = currentMetas()[u];
+    out.push({umbral:u, valor:pAct, delta:(pAct!=null && pPrev!=null) ? pAct - pPrev : null, meta, spark, unidad:"mes",
+              periodoUlt: idxUlt >= 0 ? ps[idxUlt] : null, totalUlt});
+  }
+  return out;
+}
+
+function kpiDataSemanal(metrica){
+  const ss = semanasRango();
+  const umbrales = [...currentUmbrales()].reverse();
+  const rows = rowsSemanales();
+  const out = [];
+  for(const u of umbrales){
+    const sparkFull = ss.map(s => {
+      let c=0,t=0;
+      for(const r of rows){
+        if(r.umbral !== u || r.metrica !== metrica) continue;
+        if(r.semana === s){c+=r.cumple;t+=r.total}
+      }
+      return t>0 ? {pct: 100*c/t, total: t} : null;
+    });
+    const spark = sparkFull.map(v => v ? v.pct : null);
+    let idxUlt = -1, idxPrev = -1;
+    for(let i = ss.length - 1; i >= 0; i--){
+      if(sparkFull[i] != null){
+        if(idxUlt < 0) idxUlt = i;
+        else { idxPrev = i; break; }
+      }
+    }
+    const pAct = idxUlt >= 0 ? sparkFull[idxUlt].pct : null;
+    const pPrev = idxPrev >= 0 ? sparkFull[idxPrev].pct : null;
+    const totalUlt = idxUlt >= 0 ? sparkFull[idxUlt].total : 0;
+    const meta = currentMetas()[u];
+    out.push({umbral:u, valor:pAct, delta:(pAct!=null && pPrev!=null) ? pAct - pPrev : null, meta, spark, unidad:"sem",
+              semanaUlt: idxUlt >= 0 ? ss[idxUlt] : null, totalUlt});
   }
   return out;
 }
 
 function renderLine(){
   const ctx = document.getElementById("lineChart");
-  const ps = periodosRango();
+  const esSemanal = state.tab === "A";
+  const eje = esSemanal ? semanasRango() : periodosRango();
+  const labels = esSemanal ? eje.map(lblSemana) : eje.map(lblPeriodo);
   const datasets = [];
   const colors = COLOR.CPR;
   const colorsS = COLOR.SPR;
-  const umbrales = TAB_UMBRALES[state.tab];
+  const umbrales = currentUmbrales();
+  const metas = currentMetas();
 
   const showSPR = state.metrica==="SPR" || state.metrica==="AMBOS";
   const showCPR = state.metrica==="CPR" || state.metrica==="AMBOS";
+  const serieFn = esSemanal ? serieSemanal : serieMensual;
 
   if(showCPR){
-    const {series} = serieMensual("CPR");
+    const {series} = serieFn("CPR");
     series.forEach((s,i) => datasets.push({
       label:`CPR ≤${s.umbral}h`, data:s.data, borderColor:colors[i],
-      backgroundColor:colors[i]+"20", tension:.3, borderWidth:2.5, pointRadius:3
+      backgroundColor:colors[i]+"20", tension:.3, borderWidth:2.5, pointRadius:esSemanal?2:3
     }));
   }
   if(showSPR){
-    const {series} = serieMensual("SPR");
+    const {series} = serieFn("SPR");
     series.forEach((s,i) => datasets.push({
       label:`SPR ≤${s.umbral}h`, data:s.data, borderColor:colorsS[i],
-      borderDash:[5,4], tension:.3, borderWidth:2, pointRadius:2
+      borderDash:[5,4], tension:.3, borderWidth:2, pointRadius:esSemanal?1:2
     }));
   }
   if(state.metas){
-    const metas = TAB_METAS[state.tab];
     umbrales.forEach((u,i) => datasets.push({
-      label:`Meta ${u}h (${metas[u]}%)`, data: ps.map(()=>metas[u]),
+      label:`Meta ${u}h (${metas[u]}%)`, data: labels.map(()=>metas[u]),
       borderColor:colors[i], borderDash:[2,3], borderWidth:1, pointRadius:0, fill:false
     }));
   }
@@ -237,14 +416,15 @@ function renderLine(){
   if(lineChart) lineChart.destroy();
   lineChart = new Chart(ctx, {
     type:"line",
-    data:{labels: ps.map(lblPeriodo), datasets},
+    data:{labels, datasets},
     options:{
       responsive:true, maintainAspectRatio:false,
       plugins:{legend:{position:"bottom",labels:{boxWidth:14,font:{size:11}}}},
       scales:{y:{min:0,max:110,ticks:{callback:v=>v+"%"}}}
     }
   });
-  document.getElementById("chartTitle").textContent = "Evolución SLA · " + TAB_TIPOS[state.tab].join(" + ");
+  const escalaLbl = esSemanal ? " (semanal)" : "";
+  document.getElementById("chartTitle").textContent = "Evolución SLA · " + currentTipos().join(" + ") + escalaLbl;
 }
 
 function renderKPIs(){
@@ -252,19 +432,27 @@ function renderKPIs(){
   cont.innerHTML = "";
   sparkCharts.forEach(c=>c.destroy()); sparkCharts=[];
   const metrica = state.metrica==="SPR" ? "SPR" : "CPR";
-  const ds = kpiData(metrica);
+  const esSemanal = state.tab === "A";
+  const ds = esSemanal ? kpiDataSemanal(metrica) : kpiData(metrica);
+  const unidadLbl = esSemanal ? "semana ant." : "mes ant.";
   ds.forEach((k,idx) => {
     const div = document.createElement("div");
     div.className = "kpi";
     const valTxt = k.valor!=null ? k.valor.toFixed(1)+"%" : "—";
-    const delta = k.delta!=null ? (k.delta>=0?"+":"")+k.delta.toFixed(1)+" pp vs mes ant." : "—";
+    const delta = k.delta!=null ? (k.delta>=0?"+":"")+k.delta.toFixed(1)+" pp vs "+unidadLbl : "—";
     const deltaClass = k.delta!=null && k.delta>=0 ? "up":"dn";
-    const brecha = k.valor!=null ? (k.valor - k.meta).toFixed(1)+" pp vs meta "+k.meta+"%" : "";
+    const brecha = k.valor!=null ? (k.valor - k.meta).toFixed(1)+" pp vs meta "+k.meta+"%" : "sin datos en el rango";
+    // Etiqueta de referencia temporal
+    let refTxt = "";
+    if(esSemanal && k.semanaUlt) refTxt = lblSemana(k.semanaUlt);
+    else if(!esSemanal && k.periodoUlt) refTxt = lblPeriodo(k.periodoUlt);
+    const nTxt = (k.totalUlt != null && k.totalUlt > 0) ? `n = ${k.totalUlt.toLocaleString()} tickets` : "";
     div.innerHTML = `
-      <div class="lbl">≤ ${k.umbral} horas · ${metrica}</div>
+      <div class="lbl">≤ ${k.umbral} horas · ${metrica}${refTxt ? ' · <span style="color:var(--txt)">'+refTxt+'</span>' : ''}</div>
       <div class="val">${valTxt}</div>
       <div class="delta ${deltaClass}">${delta}</div>
       <div class="meta">${brecha}</div>
+      ${nTxt ? '<div class="meta" style="margin-top:2px;font-weight:600">'+nTxt+'</div>' : ''}
       <div class="spark-wrap"><canvas id="spark${idx}"></canvas></div>`;
     cont.appendChild(div);
     const sc = new Chart(document.getElementById("spark"+idx),{
@@ -274,37 +462,99 @@ function renderKPIs(){
     });
     sparkCharts.push(sc);
   });
+  // Nota bajo las tarjetas
+  const note = document.getElementById("kpisNote");
+  if(note){
+    if(esSemanal){
+      note.innerHTML = 'Vista <b>semanal</b>: el gráfico de evolución y los KPIs se calculan por semana ISO. ' +
+                       'El valor "n = tickets" indica el tamaño de la muestra de la última semana con datos — ' +
+                       'porcentajes altos con n bajo pueden reflejar poca variabilidad estadística.';
+    } else {
+      note.innerHTML = 'Vista <b>mensual</b>: el gráfico de evolución y los KPIs se calculan por mes de resolución. ' +
+                       'El valor "n = tickets" indica el tamaño de la muestra del último mes con datos.';
+    }
+  }
 }
 
 function renderVolumen(){
   const ps = periodosRango();
-  const eeccArr = [...state.eecc];
-  const datasets = eeccArr.map(e => ({
-    label:e,
-    backgroundColor: EECC_COLOR[e] || "#999",
-    data: ps.map(p => {
-      let t = 0;
-      for(const r of DATA.volumen_mensual){
-        if(r.periodo===p && r.eecc===e) t += r.tickets;
-      }
-      return t;
-    })
-  }));
+  const porTipo = state.tab === "A";
+  let datasets, titulo;
+  if(porTipo){
+    // Volumen por tipo de ticket (agregado sobre las agencias seleccionadas)
+    const ags = state.agencia;
+    const tipos = TIPO_ORDEN.filter(t => DATA.meta.tipos.includes(t));
+    datasets = tipos.map(t => ({
+      label:t,
+      backgroundColor: TIPO_COLOR[t] || "#999",
+      data: ps.map(p => {
+        let n = 0;
+        for(const r of DATA.volumen_mensual_agencia_tipo){
+          if(r.periodo===p && r.tipo===t && ags.has(r.agencia)) n += r.tickets;
+        }
+        return n;
+      })
+    }));
+    titulo = "Volumen mensual de tickets por tipo (agencias seleccionadas)";
+  } else {
+    const eeccArr = [...state.eecc];
+    datasets = eeccArr.map(e => ({
+      label:e,
+      backgroundColor: EECC_COLOR[e] || "#999",
+      data: ps.map(p => {
+        let t = 0;
+        for(const r of DATA.volumen_mensual){
+          if(r.periodo===p && r.eecc===e) t += r.tickets;
+        }
+        return t;
+      })
+    }));
+    titulo = "Volumen mensual de tickets por EECC";
+  }
+  document.getElementById("volTitle").textContent = titulo;
   if(volChart) volChart.destroy();
+  // Plugin: total sobre cada barra apilada
+  const totalOnTop = {
+    id:"totalOnTop",
+    afterDatasetsDraw(chart){
+      const {ctx, scales:{x,y}} = chart;
+      const dss = chart.data.datasets;
+      if(!dss.length) return;
+      const nPeriodos = chart.data.labels.length;
+      ctx.save();
+      ctx.font = "600 11px 'Open Sans', 'Segoe UI', sans-serif";
+      ctx.fillStyle = "#191919";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      for(let i=0; i<nPeriodos; i++){
+        let total = 0;
+        for(const d of dss){ const v = d.data[i]; if(typeof v === "number") total += v; }
+        if(total === 0) continue;
+        const cx = x.getPixelForValue(i);
+        const cy = y.getPixelForValue(total);
+        ctx.fillText(total.toLocaleString(), cx, cy - 4);
+      }
+      ctx.restore();
+    }
+  };
+  // Barras mas angostas + mas gap entre meses para que el total no se junte
+  datasets.forEach(d => { d.categoryPercentage = 0.55; d.barPercentage = 0.95; });
   volChart = new Chart(document.getElementById("volChart"),{
     type:"bar",
     data:{labels: ps.map(lblPeriodo), datasets},
     options:{
       responsive:true, maintainAspectRatio:false,
+      layout:{padding:{top:18}},
       plugins:{legend:{position:"bottom",labels:{boxWidth:14,font:{size:11}}}},
       scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>v.toLocaleString()}}}
-    }
+    },
+    plugins:[totalOnTop]
   });
 }
 
 function renderAll(){renderLine();renderKPIs();renderVolumen();}
 
-function buildDropdown(id, items, sel, labelSingular, labelPlural){
+function buildDropdown(id, items, sel, labelSingular, labelPlural, onChangeExtra){
   const dd = document.getElementById(id);
   const btn = dd.querySelector(".dd-btn");
   const panel = dd.querySelector(".dd-panel");
@@ -315,14 +565,16 @@ function buildDropdown(id, items, sel, labelSingular, labelPlural){
   }
   function rebuild(){
     panel.innerHTML = "";
-    const allChecked = sel.size === items.length;
+    const allChecked = items.length > 0 && sel.size === items.length;
     const allLbl = document.createElement("label");
     allLbl.className = "dd-item dd-all";
     allLbl.innerHTML = `<input type="checkbox" ${allChecked?"checked":""}> Seleccionar todos`;
     allLbl.querySelector("input").onchange = (e) => {
       if(e.target.checked){ items.forEach(i => sel.add(i)); }
       else { sel.clear(); }
-      rebuild(); refreshLabel(); renderAll();
+      rebuild(); refreshLabel();
+      if(onChangeExtra) onChangeExtra();
+      renderAll();
     };
     panel.appendChild(allLbl);
     items.forEach(it => {
@@ -332,7 +584,9 @@ function buildDropdown(id, items, sel, labelSingular, labelPlural){
       lbl.querySelector("input").onchange = (e) => {
         if(e.target.checked) sel.add(it); else sel.delete(it);
         if(sel.size === 0){ items.forEach(i => sel.add(i)); rebuild(); }
-        refreshLabel(); renderAll();
+        refreshLabel();
+        if(onChangeExtra) onChangeExtra();
+        renderAll();
         const allCb = panel.querySelector(".dd-all input");
         allCb.checked = sel.size === items.length;
       };
@@ -346,6 +600,43 @@ function buildDropdown(id, items, sel, labelSingular, labelPlural){
   };
   panel.onclick = (e) => e.stopPropagation();
   refreshLabel(); rebuild();
+  dd._refresh = () => { rebuild(); refreshLabel(); };
+}
+
+// --- Coupling EECC <-> Agencia ---
+function agenciasDeEECC(){
+  const map = DATA.meta.agencia_a_eecc || {};
+  const eeccSel = state.eecc;
+  return DATA.meta.agencias.filter(a => eeccSel.has(map[a]));
+}
+function eeccDeAgencias(){
+  const map = DATA.meta.agencia_a_eecc || {};
+  const s = new Set();
+  state.agencia.forEach(a => { if(map[a]) s.add(map[a]); });
+  return s;
+}
+function syncAgenciasSegunEECC(){
+  if(couplingLock) return;
+  couplingLock = true;
+  const disponibles = agenciasDeEECC();
+  // Mantener solo las agencias seleccionadas que siguen disponibles
+  const nuevaSel = new Set([...state.agencia].filter(a => disponibles.includes(a)));
+  // Si quedo vacia, seleccionar todas las disponibles
+  if(nuevaSel.size === 0) disponibles.forEach(a => nuevaSel.add(a));
+  state.agencia = nuevaSel;
+  buildDropdown("ddAgencia", disponibles, state.agencia, "Agencia", "agencias", syncEECCSegunAgencias);
+  couplingLock = false;
+}
+function syncEECCSegunAgencias(){
+  if(couplingLock) return;
+  couplingLock = true;
+  // EECC = union de EECC de las agencias seleccionadas
+  const nuevaSel = eeccDeAgencias();
+  if(nuevaSel.size === 0) DATA.meta.eecc.forEach(e => nuevaSel.add(e));
+  state.eecc = nuevaSel;
+  const ddEECC = document.getElementById("ddEECC");
+  if(ddEECC && ddEECC._refresh) ddEECC._refresh();
+  couplingLock = false;
 }
 
 function initFilters(){
@@ -359,9 +650,9 @@ function initFilters(){
   desde.onchange = e => {state.desde = e.target.value; renderAll()};
   hasta.onchange = e => {state.hasta = e.target.value; renderAll()};
 
-  buildDropdown("ddEECC", DATA.meta.eecc, state.eecc, "EECC", "EECC");
-  buildDropdown("ddAgencia", DATA.meta.agencias, state.agencia, "Agencia", "agencias");
-  buildDropdown("ddTipo", TAB_TIPOS[state.tab], state.tipo, "Tipo", "tipos");
+  buildDropdown("ddEECC", DATA.meta.eecc, state.eecc, "EECC", "EECC", syncAgenciasSegunEECC);
+  buildDropdown("ddAgencia", DATA.meta.agencias, state.agencia, "Agencia", "agencias", syncEECCSegunAgencias);
+  buildDropdown("ddTipo", currentTipos(), state.tipo, "Tipo", "tipos");
 
   document.getElementById("fMetas").onchange = e => {state.metas = e.target.checked; renderAll()};
   document.querySelectorAll("#fMet button").forEach(b => b.onclick = () => {
@@ -374,8 +665,26 @@ function initFilters(){
     document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
     t.classList.add("active");
     state.tab = t.dataset.tab;
-    state.tipo = new Set(state.tab === "C" ? ["Critica"] : TAB_TIPOS[state.tab]);
-    buildDropdown("ddTipo", TAB_TIPOS[state.tab], state.tipo, "Tipo", "tipos");
+    // Sub-tab visible solo en "Detalle por agencia"
+    document.getElementById("subtabs").classList.toggle("show", state.tab === "A");
+    // Filtro Tipo Ticket redundante en pestaña A (los sub-tabs ya cubren el tipo)
+    document.getElementById("fldTipo").style.display = state.tab === "A" ? "none" : "";
+    document.getElementById("filters").classList.toggle("no-tipo", state.tab === "A");
+    // Tipo default segun la key efectiva
+    const k = currentTipoKey();
+    state.tipo = new Set(k === "C" ? ["Critica"] : TAB_TIPOS[k]);
+    buildDropdown("ddTipo", TAB_TIPOS[k], state.tipo, "Tipo", "tipos");
+    renderAll();
+  });
+
+  document.querySelectorAll(".stab").forEach(t => t.onclick = () => {
+    document.querySelectorAll(".stab").forEach(x => x.classList.remove("active"));
+    t.classList.add("active");
+    state.subTab = t.dataset.sub;
+    const k = currentTipoKey();
+    // Al cambiar de sub-tab, selecciona TODOS los tipos del grupo (Critica + Fibra Oscura para C)
+    state.tipo = new Set(TAB_TIPOS[k]);
+    buildDropdown("ddTipo", TAB_TIPOS[k], state.tipo, "Tipo", "tipos");
     renderAll();
   });
 
@@ -398,6 +707,7 @@ function pintarUltimaActualizacion(){
 function boot(){
   state = {
     tab: "C",
+    subTab: "C",
     desde: DATA.meta.periodos[0],
     hasta: DATA.meta.periodos[DATA.meta.periodos.length-1],
     eecc: new Set(DATA.meta.eecc),
