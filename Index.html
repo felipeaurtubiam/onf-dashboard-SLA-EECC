@@ -577,6 +577,8 @@ function buildDropdown(id, items, sel, labelSingular, labelPlural, onChangeExtra
     allLbl.querySelector("input").onchange = (e) => {
       if(e.target.checked){ items.forEach(i => sel.add(i)); }
       else { sel.clear(); }
+      // Nunca dejar el filtro vacio: si se desmarca todo, volver a todos seleccionados
+      if(sel.size === 0){ items.forEach(i => sel.add(i)); }
       rebuild(); refreshLabel();
       if(onChangeExtra) onChangeExtra();
       renderAll();
@@ -623,18 +625,28 @@ function eeccDeAgencias(){
 function syncAgenciasSegunEECC(){
   if(couplingLock) return;
   couplingLock = true;
+  // Defensivo: state.eecc nunca vacio
+  if(state.eecc.size === 0){
+    DATA.meta.eecc.forEach(e => state.eecc.add(e));
+    const ddE = document.getElementById("ddEECC");
+    if(ddE && ddE._refresh) ddE._refresh();
+  }
   const disponibles = agenciasDeEECC();
-  // Mantener solo las agencias seleccionadas que siguen disponibles
-  const nuevaSel = new Set([...state.agencia].filter(a => disponibles.includes(a)));
-  // Si quedo vacia, seleccionar todas las disponibles
-  if(nuevaSel.size === 0) disponibles.forEach(a => nuevaSel.add(a));
-  state.agencia = nuevaSel;
+  // Reset: al cambiar la seleccion de EECC, seleccionar TODAS las agencias
+  // disponibles. Asi agregar una EECC muestra sus datos, y quitarla los oculta.
+  state.agencia = new Set(disponibles);
   buildDropdown("ddAgencia", disponibles, state.agencia, "Agencia", "agencias", syncEECCSegunAgencias);
   couplingLock = false;
 }
 function syncEECCSegunAgencias(){
   if(couplingLock) return;
   couplingLock = true;
+  // Defensivo: state.agencia nunca vacio
+  if(state.agencia.size === 0){
+    DATA.meta.agencias.forEach(a => state.agencia.add(a));
+    const ddA = document.getElementById("ddAgencia");
+    if(ddA && ddA._refresh) ddA._refresh();
+  }
   // EECC = union de EECC de las agencias seleccionadas
   const nuevaSel = eeccDeAgencias();
   if(nuevaSel.size === 0) DATA.meta.eecc.forEach(e => nuevaSel.add(e));
