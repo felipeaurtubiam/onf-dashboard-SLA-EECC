@@ -38,10 +38,6 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
 .filters-det > summary::-webkit-details-marker{display:none}
 .filters-det > summary::after{content:"▾";float:right;transition:transform .2s}
 .filters-det[open] > summary::after{transform:rotate(180deg)}
-/* Desktop: mostrar filtros aunque details este cerrado (el summary esta oculto) */
-@media(min-width:481px){
-  .filters-det > .filters{display:grid !important}
-}
 .filters{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding:14px 24px;background:#FAFBFC;align-items:start}
 .filters.no-tipo{grid-template-columns:repeat(5,1fr)}
 .fld{display:flex;flex-direction:column;gap:4px}
@@ -61,15 +57,24 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
 .dd .dd-item input{margin:0}
 .dd .dd-all{border-bottom:1px solid var(--border);font-weight:600;color:var(--morado)}
 .main{display:grid;grid-template-columns:1fr 280px;gap:16px;padding:20px 24px}
-.panel{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;display:flex;flex-direction:column}
 .panel h3{margin:0 0 12px;font-size:13px;color:var(--txt-soft);font-weight:700;text-transform:uppercase;letter-spacing:.4px}
 .chart-wrap{position:relative;height:380px}
+/* En el layout principal, el chart llena todo el alto disponible del panel */
+.main .chart-wrap{flex:1;height:auto;min-height:380px}
 .chart-scroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
 .chart-scroll-inner{position:relative;height:100%}
-.kpis-col{display:flex;flex-direction:column;gap:10px}
+.kpis-col{display:flex;flex-direction:column;gap:10px;position:relative}
 .kpis{display:flex;flex-direction:column;gap:12px}
 .kpis-note{font-size:11px;color:var(--txt-soft);line-height:1.5;padding:10px 12px;background:#F4F5F8;border-radius:6px;border-left:3px solid var(--cyan)}
 .kpis-note b{color:var(--morado);font-weight:600}
+.kpis-info{align-self:flex-end;position:relative;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;background:var(--morado);color:#fff;font-size:13px;font-weight:700;cursor:help;font-family:Georgia,serif;font-style:italic;user-select:none}
+.kpis-info:hover .kpis-tip,.kpis-info:focus .kpis-tip{visibility:visible;opacity:1}
+.kpis-tip{visibility:hidden;opacity:0;transition:opacity .15s;position:absolute;right:0;top:calc(100% + 8px);width:280px;padding:10px 12px;background:#191919;color:#fff;font-size:11px;font-weight:400;font-style:normal;font-family:inherit;line-height:1.5;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.2);z-index:100;text-align:left;pointer-events:none}
+.kpis-tip b{color:var(--cyan);font-weight:600}
+.kpis-tip::before{content:"";position:absolute;bottom:100%;right:8px;border:6px solid transparent;border-bottom-color:#191919}
+/* Ocultar el ícono de tooltip: se muestra siempre la nota */
+.kpis-info{display:none}
 .kpi{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;position:relative;overflow:hidden}
 .kpi .lbl{font-size:11px;color:var(--txt-soft);font-weight:700;letter-spacing:.3px;text-transform:uppercase}
 .kpi .val{font-size:30px;font-weight:800;color:var(--morado);margin:4px 0 2px;line-height:1}
@@ -162,7 +167,7 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
   <div class="stab" data-sub="R">Reclamo</div>
 </div>
 
-<details class="filters-det" id="filtersDet">
+<details class="filters-det" id="filtersDet" open>
 <summary>Filtros</summary>
 <div class="filters" id="filters">
   <div class="fld"><label>Mes desde</label><select id="fDesde"></select></div>
@@ -188,6 +193,7 @@ body{margin:0;font-family:'Open Sans','Segoe UI',sans-serif;background:var(--bg)
     <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
   </div>
   <div class="kpis-col">
+    <span class="kpis-info" id="kpisInfo" tabindex="0" aria-label="Información sobre la vista">i<span class="kpis-tip" id="kpisTip"></span></span>
     <div class="kpis" id="kpis"></div>
     <div class="kpis-note" id="kpisNote"></div>
   </div>
@@ -462,18 +468,17 @@ function renderKPIs(){
     });
     sparkCharts.push(sc);
   });
-  // Nota bajo las tarjetas
+  // Texto informativo (mismo mensaje en la nota mobile y en el tooltip desktop)
+  const html = esSemanal
+    ? 'Vista <b>semanal</b>: el gráfico de evolución y los KPIs se calculan por semana ISO. ' +
+      'El valor "n = tickets" indica el tamaño de la muestra de la última semana con datos — ' +
+      'porcentajes altos con n bajo pueden reflejar poca variabilidad estadística.'
+    : 'Vista <b>mensual</b>: el gráfico de evolución y los KPIs se calculan por mes de resolución. ' +
+      'El valor "n = tickets" indica el tamaño de la muestra del último mes con datos.';
   const note = document.getElementById("kpisNote");
-  if(note){
-    if(esSemanal){
-      note.innerHTML = 'Vista <b>semanal</b>: el gráfico de evolución y los KPIs se calculan por semana ISO. ' +
-                       'El valor "n = tickets" indica el tamaño de la muestra de la última semana con datos — ' +
-                       'porcentajes altos con n bajo pueden reflejar poca variabilidad estadística.';
-    } else {
-      note.innerHTML = 'Vista <b>mensual</b>: el gráfico de evolución y los KPIs se calculan por mes de resolución. ' +
-                       'El valor "n = tickets" indica el tamaño de la muestra del último mes con datos.';
-    }
-  }
+  if(note) note.innerHTML = html;
+  const tip = document.getElementById("kpisTip");
+  if(tip) tip.innerHTML = html;
 }
 
 function renderVolumen(){
@@ -704,6 +709,25 @@ function pintarUltimaActualizacion(){
   document.getElementById("hdrUpdated").textContent = txt;
 }
 
+function setupFiltersAccordion(){
+  const det = document.getElementById("filtersDet");
+  if(!det) return;
+  let userToggled = false;
+  det.addEventListener("toggle", () => { if(window.innerWidth <= 480) userToggled = true; });
+  const apply = () => {
+    if(window.innerWidth > 480){
+      // Desktop: siempre abierto (el summary está oculto)
+      if(!det.hasAttribute("open")) det.setAttribute("open", "");
+      userToggled = false;
+    } else if(!userToggled){
+      // Mobile: cerrado por default (usuario puede abrir)
+      det.removeAttribute("open");
+    }
+  };
+  apply();
+  window.addEventListener("resize", apply);
+}
+
 function boot(){
   state = {
     tab: "C",
@@ -720,6 +744,7 @@ function boot(){
   document.getElementById("app").style.display = "";
   pintarUltimaActualizacion();
   initFilters();
+  setupFiltersAccordion();
   renderAll();
 }
 
